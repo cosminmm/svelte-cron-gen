@@ -5,6 +5,11 @@ Based on [mrbatista/angular-cron-gen](https://github.com/mrbatista/angular-cron-
 
 > Attention WIP!
 
+## TODOs
+
+- configure, build and publish to npm
+- add support for bootstrap and other css frameworks
+
 ## Instalation
 
 ```sh
