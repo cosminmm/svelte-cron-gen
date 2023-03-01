@@ -1,7 +1,6 @@
 <script>
   import { toString } from "cronstrue";
 
-  export let use24HourTime = true;
   // export let value = "0 0 * 1/1 * ? *";
   export let value = "0 0/0 * 1/1 * ? *";
   // export let value = "* * * * * * *";
@@ -11,6 +10,7 @@
   export let showAdvanced = false;
   export let minutesStep = 1;
 
+  let use24HourTime = true;
   let tabs = [
     // "seconds",
     "minutes",
@@ -24,20 +24,17 @@
   let valueTranslated = toString(value, { locale: language });
   const terminations = ["st", "nd", "rd", "th"];
   const seconds = new Array(60).fill(1).map((_el, ix) => ix);
-  const minutes = new Array(60).fill(1).map((_el, ix) => ix);
+  const minutes = new Array(60)
+    .fill(1)
+    .map((_el, ix) => {
+      if (minutesStep > 1) {
+        return ix % minutesStep === 0 ? ix : undefined;
+      } else return ix;
+    })
+    .filter((el) => el !== undefined);
   const hours = new Array(24).fill(1).map((_el, ix) => ix);
   const days = new Array(31).fill(1).map((_el, ix) => ix + 1);
-  // const weekDays = new Array(7).fill(1).map((_el, ix) => ix + 1);
   const weekDaysShort = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-  // const weekDaysNames = [
-  //   "Monday",
-  //   "Tuesday",
-  //   "Wednesday",
-  //   "Thursday",
-  //   "Friday",
-  //   "Saturday",
-  //   "Sunday",
-  // ];
   const weekDaysMap = {
     MON: "Monday",
     TUE: "Tuesday",
@@ -56,7 +53,6 @@
     { key: "L", val: "Last" },
   ];
   const months = new Array(12).fill(1).map((_el, ix) => ix + 1);
-  // const monthsDays = [...days.map((el) => el + "th Day")];
   const monthlyDays = [
     { key: "1W", val: "First Weekday" },
     ...days.reduce((o, el) => {
@@ -253,15 +249,10 @@
   let cronSettsBkup = JSON.stringify(cronSetts);
   let tabShow = "minutes";
   let valueBkUp = value;
-  // let cronService = new CronGenService();
-  // cronService
 
   parseCron();
 
   function generateCron() {
-    // if ("seconds" === tabShow) {
-    //   value = `${cronSetts.seconds.seconds} * * 1/1 * ? *`;
-    // }
     if ("minutes" === tabShow) {
       value = `${cronSetts.minutes.seconds} 0/${cronSetts.minutes.minutes} * 1/1 * ? *`;
     }
